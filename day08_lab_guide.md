@@ -1,46 +1,42 @@
 # Day 8 Lab Guide — Boosting & Hyperparameter Tuning
 
-## Tasks
+## Actual work artifacts
+This lab is based on the supplied delivery-delay dataset and tuning logs:
+- `internB_delivery_delays.csv`
+- `xgb_randomized_search_results.csv`
+- `optuna_trials.csv`
 
-### Task 1 — Bagging vs Boosting
-Write a short comparison:
-- How bagging trains models and combines predictions.
-- How boosting trains learners sequentially, with later learners focusing on errors from earlier learners.
-- Typical strengths and risks of each approach.
+The target column in the dataset is `is_delayed`. The dataset contains 1,800 rows and 17 columns, with 1,249 rows labelled 0 and 551 labelled 1.
 
-### Task 2 — Train boosting models
-Using the provided notebook, train and compare:
-- Decision Tree baseline
-- AdaBoost
-- Gradient Boosting
-- HistGradientBoosting
+## Task 1 — Inspect the dataset
+1. Load the CSV and inspect shape, column types, missing values, and target balance.
+2. Identify identifier columns and fields that might cause leakage.
+3. Investigate suspicious or extreme values, particularly in `distance_km`.
+4. Document a preprocessing strategy for missing numeric and categorical values.
 
-Record accuracy, precision, recall, F1-score, ROC-AUC, and fit time. Explain why accuracy alone may not tell the full story.
+## Task 2 — Review randomized XGBoost search
+1. Load `xgb_randomized_search_results.csv`.
+2. Sort by `rank_test_score` and inspect the best configuration.
+3. Compare `mean_test_score`, `std_test_score`, and the five fold scores.
+4. Explain why cross-validation scores vary between folds.
 
-### Task 3 — Hyperparameter tuning
-Use RandomizedSearchCV with cross-validation to tune GradientBoostingClassifier. Report:
-- Best parameters
-- Best mean cross-validation score
-- Final test metrics
+In the supplied file, rank 1 has a mean cross-validation score of approximately 0.5996. The CSV does not identify the scoring metric by itself; use the original training code to name the metric accurately.
 
-Explain why the test set must not be used to select hyperparameters.
+## Task 3 — Review Optuna trials
+1. Load `optuna_trials.csv`.
+2. Compare objective values across trials and inspect each trial's parameters.
+3. Identify the highest recorded value (approximately 0.6095, trial 1).
+4. Explain how an optimization objective and search space determine what Optuna learns.
 
-### Task 4 — Early stopping and extensions
-- Describe the purpose of early stopping and how it can help control overfitting.
-- Try XGBoost or LightGBM if installed.
-- Optionally try Optuna for optimization and record the objective and trial results.
+The column `value` alone does not reveal which metric was optimized.
+
+## Task 4 — Compare and report
+Create a concise table of the best randomized-search and Optuna results. Do not claim one method is better unless both trials optimize the same metric on comparable validation splits.
 
 ## Submission checklist
-- [ ] Notebook runs from top to bottom.
-- [ ] Data split is stratified and reproducible.
-- [ ] Hyperparameter search uses training data only.
-- [ ] A comparison table is included.
-- [ ] Results are explained in your own words.
-- [ ] Optional library experiments are clearly marked as optional.
-
-## Suggested reflection questions
-1. What is the key difference between bagging and boosting?
-2. Which model had the best test F1-score in your run?
-3. Did tuning improve cross-validation performance? Did that translate to test performance?
-4. What signs could indicate overfitting?
-5. Why should the held-out test set be evaluated only after model selection?
+- [ ] Dataset dimensions, target distribution, and missing values documented.
+- [ ] Data quality issues inspected and preprocessing decisions justified.
+- [ ] Best randomized-search row and fold variation reported.
+- [ ] Best Optuna trial and parameter values reported.
+- [ ] Metric/objective definition verified from the original training code.
+- [ ] No unsupported claims about test performance.
